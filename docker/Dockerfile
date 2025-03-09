@@ -66,8 +66,10 @@ RUN mv $APP_DIR/server/etc /home/alink/
 # Ports > 21157 since we're not root.
 EXPOSE 21157/udp
 
-# Install cron
-RUN apt-get update && apt-get install -y cron && rm -rf /var/lib/apt/lists/*
+# Install cron and wget
+RUN apt-get update && \
+    apt-get install -y cron wget && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set proper permissions for cron
 RUN chmod gu+rw /var/run
@@ -79,13 +81,19 @@ USER alink
 WORKDIR /home/alink
 
 # Servfil 
-RUN cd /home/alink/etc/ && sh servfil
+#RUN cd /home/alink/etc/ && sh servfil
 
 # Create local-servers.txt and populate it with an IP and hostname
 RUN echo "0.0.0.0 localhost" > /home/alink/etc/local-servers.txt
 
 # Install crontab for the game server user
 RUN crontab -u alink /home/alink/etc/crontab2.lst
+
+RUN mkdir /home/alink/public_html
+
+# Entrypoint
+COPY docker/entrypoint.sh /opt/local/bin/entrypoint.sh
+ENTRYPOINT ["/opt/local/bin/entrypoint.sh"]
 
 # Ensure cron is running in the background
 CMD ["cron", "-f"]
