@@ -1,0 +1,42 @@
+# System Files
+*.DS_Store
+*Thumbs.db
+
+# Library
+src/3rdparty/md5/
+src/3rdparty/d3des/
+
+# Ignore object files and binaries
+*.o
+*.out
+*.a
+*.so
+*.exe
+*.dll
+
+# Ignore compiled libraries
+*.lib
+*.la
+*.lo
+
+# Ignore debug and profiling files
+*.dSYM/
+*.gcda
+*.gcno
+*.gcov
+
+# Ignore build directories
+/build/
+/bin/
+/obj/
+/linux86/
+
+# Ignore editor/IDE files
+*.swp
+*.swo
+*.vscode/
+*.idea/
+
+linux86
+*.zip
+*.tgz
