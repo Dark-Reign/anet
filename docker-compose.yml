@@ -1,0 +1,16 @@
+services:
+  anet-server:
+    container_name: anet-server
+    platform: linux/amd64
+    image: anet-server:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    #entrypoint: ["/home/anet/bin/server"]
+    #entrypoint: ["sh", "-c", "ls /home/alink/etc"]
+    #entrypoint: ["sh", "-c", "cd /home/alink/etc && ./servfil"]
+    #entrypoint: ["sh", "-c", "cd /home/alink/anetmon && ./getservers.sh"]
+    #entrypoint: ["/bin/sh", "-ec", "sleep infinity"]
+    ports:
+      - 8080:8080/tcp
+      - 21157:21157/udp

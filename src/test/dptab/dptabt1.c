@@ -675,7 +675,7 @@ void dptabt1_destroy(dptabt1_t *ptest)
  and polls them until they cry uncle.  Any failure causes the
  subroutines to terminate the program with an error message.
 -----------------------------------------------------------------------*/
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	int i;
 	int running1;

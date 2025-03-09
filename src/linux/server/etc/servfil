@@ -15,9 +15,15 @@ TMPDIR=/tmp
 status=0
 typechngd=0
 
+# Original activision updater URL
+#UPDATER_URL=http://updater.activision.com/updater/etc
+
+# Dark Reign Community updater URL
+UPDATER_URL=https://nielk1.github.io/anet/master
+
 echo starting servfil `date`
 for file in names servers apps types; do
-   wget -O $TMPDIR/$file.tmp -t 300 https://nielk1.github.io/anet/master/$file.txt
+   wget -qO $TMPDIR/$file.tmp -t 300 $UPDATER_URL/$file.txt
    if [ -s $TMPDIR/$file.tmp ]; then
       i=`grep -c "<HTML>" $TMPDIR/$file.tmp`
       if [ $i -eq 0 ]; then

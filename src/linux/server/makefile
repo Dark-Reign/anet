@@ -11,7 +11,8 @@
 # Initial revision
 
 PACK=__attribute__ ((packed))
-COPT = $(FLAGS) -DUNIX -Dcdecl="" "-D__NO_ANONYMOUS_UNIONS__" "-DPACK=$(PACK)" -Dstrnicmp=strncasecmp -Dstricmp=strcasecmp -Ddp_ANET2 -I. -I../../../../h -I../../../../demo/utils -I../../../aeh -I../../../dp -I../../../score -I../../../sbd -I../../../bhttp -Wno-error
+EXTRA_FLAGS = -Wno-implicit-function-declaration
+COPT = $(FLAGS) $(EXTRA_FLAGS) -DUNIX -Dcdecl="" "-D__NO_ANONYMOUS_UNIONS__" "-DPACK=$(PACK)" -Dstrnicmp=strncasecmp -Dstricmp=strcasecmp -Ddp_ANET2 -I. -I../../../../h -I../../../../demo/utils -I../../../aeh -I../../../dp -I../../../score -I../../../sbd -I../../../bhttp -Wno-error
 
 default: ../../../../linux86/bin/$(DEST)
 
