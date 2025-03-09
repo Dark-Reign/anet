@@ -11,4 +11,6 @@ services:
     #entrypoint: ["sh", "-c", "cd /home/alink/etc && ./servfil"]
     #entrypoint: ["sh", "-c", "cd /home/alink/anetmon && ./getservers.sh"]
     #entrypoint: ["/bin/sh", "-ec", "sleep infinity"]
-    
+    ports:
+      - 8080:8080/tcp
+      - 21157:21157/udp
