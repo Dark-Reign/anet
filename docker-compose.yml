@@ -1,0 +1,11 @@
+services:
+  anet-server:
+    container_name: anet-server
+    platform: linux/amd64
+    image: anet-server:latest
+    build: .
+    #entrypoint: ["sh", "-c", "/home/anet/bin/server"]
+    #entrypoint: ["sh", "-c", "ls /home/alink/etc"]
+    #entrypoint: ["sh", "-c", "cd /home/alink/anetmon && ./getservers.sh"]
+    #entrypoint: ["/bin/sh", "-ec", "sleep infinity"]
+    
