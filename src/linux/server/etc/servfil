@@ -23,7 +23,7 @@ UPDATER_URL=https://nielk1.github.io/anet/master
 
 echo starting servfil `date`
 for file in names servers apps types; do
-   wget -O $TMPDIR/$file.tmp -t 300 $UPDATER_URL/$file.txt
+   wget -qO $TMPDIR/$file.tmp -t 300 $UPDATER_URL/$file.txt
    if [ -s $TMPDIR/$file.tmp ]; then
       i=`grep -c "<HTML>" $TMPDIR/$file.tmp`
       if [ $i -eq 0 ]; then
