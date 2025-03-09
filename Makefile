@@ -7,6 +7,7 @@ all:
 
 clean:
 	rm -f *.tgz *.zip
+	cd src/3rdparty; ./clean
 	cd src/linux; ./clean
 
 bootstrap:
