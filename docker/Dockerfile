@@ -46,16 +46,27 @@ RUN make
 # Runtime stage
 FROM debian:stable-slim
 
+# Install cron and wget
+RUN apt-get update && \
+    apt-get install -y cron wget apache2 procps sudo supervisor && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set environment variable
 ENV BUILD_DIR=/build/linux86
 ENV APP_DIR=/home/anet
 
 # Copy from build stage using the variable
-WORKDIR /app
 COPY --from=build $BUILD_DIR $APP_DIR
 
 # Create non-root user
 RUN useradd -m alink
+
+# Sudo
+#RUN apt-get update && \
+#    apt-get install -y csudo && \
+#    rm -rf /var/lib/apt/lists/*
+#RUN echo 'alink:darkreign' | chpasswd
+#RUN usermod -aG sudo alink
 
 # Set proper permissions for the user
 RUN chown -R alink:alink $APP_DIR
@@ -63,28 +74,34 @@ RUN chown -R alink:alink $APP_DIR
 RUN mv $APP_DIR/anetmon/ /home/alink/
 RUN mv $APP_DIR/server/etc /home/alink/
 
-# Install cron and wget
-RUN apt-get update && \
-    apt-get install -y cron wget lighttpd procps && \
-    rm -rf /var/lib/apt/lists/*
-
 # Set proper permissions for cron
 RUN chmod gu+rw /var/run
 RUN chmod gu+s /usr/sbin/cron
 
-# Configure lighttpd
+# Install crontab for the game server user
+RUN crontab -u alink /home/alink/etc/crontab2.lst
+
+# Configure Apache Directory public_html
 RUN mkdir -p /home/alink/public_html && \
-    chown -R alink:alink /home/alink/public_html && \
-    rm /etc/lighttpd/lighttpd.conf && \
-    echo 'server.document-root = "/home/alink/public_html"' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'server.port = 8080' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'dir-listing.activate = "enable"' >> /etc/lighttpd/lighttpd.conf
+    chown -R alink: /home/alink/public_html
+    
+# Configure Apache user
+RUN chown -R alink: /var/log/apache2/ && \
+    sed -i 's/APACHE_RUN_USER=www-data/APACHE_RUN_USER=alink/' /etc/apache2/envvars && \
+    sed -i 's/APACHE_RUN_GROUP=www-data/APACHE_RUN_GROUP=alink/' /etc/apache2/envvars
+
+COPY docker/apache2.conf /etc/apache2/conf-available/anet2.conf
+RUN a2enconf anet2 && \
+    a2enmod cgid && \
+    sed -i 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
+
+# Copy supervisor configuration file
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN chown -R alink /var/log/supervisor/
+RUN chown -R alink /run
 
 # Switch to non-root user
 USER alink
-
-# Install crontab for the game server user
-RUN crontab -u alink /home/alink/etc/crontab2.lst
 
 WORKDIR /home/alink
 
@@ -99,5 +116,8 @@ HEALTHCHECK --interval=1m --start-period=30s --start-interval=5s --timeout=2s \
 COPY docker/entrypoint.sh /opt/local/bin/entrypoint.sh
 ENTRYPOINT ["/opt/local/bin/entrypoint.sh"]
 
-# Ensure cron is running in the background
-CMD ["cron", "-f"]
+# Switch to non-root user
+USER alink
+
+# Use supervisor as the main process
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

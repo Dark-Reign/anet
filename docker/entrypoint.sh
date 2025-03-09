@@ -11,7 +11,6 @@ cd ~/etc
 
 # Deploy public_html/etc
 cd ~/public_html
-ln -s ~alink/public_html/ anet2
 mkdir etc
 cd etc
 ln -s ~alink/etc/apps.txt apps.txt
@@ -23,9 +22,6 @@ ln -s ~alink/etc/types.txt types.txt
 cd ~/public_html/etc
 cp ../../etc/runsrvfil.cgi .
 chmod ug+sx runsrvfil.cgi
-
-# Start lighttpd
-lighttpd -D -f /etc/lighttpd/lighttpd.conf&
 
 echo executing: "$@"
 exec "$@"
