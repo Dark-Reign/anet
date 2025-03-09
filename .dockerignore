@@ -6,6 +6,17 @@
 src/3rdparty/md5/
 src/3rdparty/d3des/
 
+# Ignore build directories
+/build/
+/bin/
+/obj/
+/linux86/
+/src/linux/runsrvfil/runsrvfil.cgi
+/**/debug/
+/**/log/
+/**/normal/
+/**/profile/
+
 # Ignore object files and binaries
 *.o
 *.out
@@ -24,12 +35,6 @@ src/3rdparty/d3des/
 *.gcda
 *.gcno
 *.gcov
-
-# Ignore build directories
-/build/
-/bin/
-/obj/
-/linux86/
 
 # Ignore editor/IDE files
 *.swp
