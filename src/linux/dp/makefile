@@ -2,7 +2,8 @@
 # Linux Version
 
 PACK=__attribute__ ((packed))
-COPT = $(FLAGS) -DUNIX -Dcdecl="" "-D__NO_ANONYMOUS_UNIONS__" "-DPACK=$(PACK)" -Dstrnicmp=strncasecmp -Dstricmp=strcasecmp -Ddp_ANET2 -DCOMM_INST -I. -I../../../../h -I../../../aeh -I../../../../demo/utils
+EXTRA_FLAGS = -Wno-implicit-function-declaration
+COPT = $(FLAGS) $(EXTRA_FLAGS) -DUNIX -Dcdecl="" "-D__NO_ANONYMOUS_UNIONS__" "-DPACK=$(PACK)" -Dstrnicmp=strncasecmp -Dstricmp=strcasecmp -Ddp_ANET2 -DCOMM_INST -I. -I../../../../h -I../../../aeh -I../../../../demo/utils
 CC = gcc $(COPT)
 DRIVER=uudps.o dictset.o logpkt.o
 OBJ_FILES = dp2.o dpmem.o dpdll.o dynatab.o assoctab.o dprint.o q.o ini.o \
