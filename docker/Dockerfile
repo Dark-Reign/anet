@@ -63,33 +63,37 @@ RUN chown -R alink:alink $APP_DIR
 RUN mv $APP_DIR/anetmon/ /home/alink/
 RUN mv $APP_DIR/server/etc /home/alink/
 
-# Ports > 21157 since we're not root.
-EXPOSE 21157/udp
-
 # Install cron and wget
 RUN apt-get update && \
-    apt-get install -y cron wget && \
+    apt-get install -y cron wget lighttpd procps && \
     rm -rf /var/lib/apt/lists/*
 
 # Set proper permissions for cron
 RUN chmod gu+rw /var/run
 RUN chmod gu+s /usr/sbin/cron
 
+# Configure lighttpd
+RUN mkdir -p /home/alink/public_html && \
+    chown -R alink:alink /home/alink/public_html && \
+    rm /etc/lighttpd/lighttpd.conf && \
+    echo 'server.document-root = "/home/alink/public_html"' >> /etc/lighttpd/lighttpd.conf && \
+    echo 'server.port = 8080' >> /etc/lighttpd/lighttpd.conf && \
+    echo 'dir-listing.activate = "enable"' >> /etc/lighttpd/lighttpd.conf
+
 # Switch to non-root user
 USER alink
-
-WORKDIR /home/alink
-
-# Servfil 
-#RUN cd /home/alink/etc/ && sh servfil
-
-# Create local-servers.txt and populate it with an IP and hostname
-RUN echo "0.0.0.0 localhost" > /home/alink/etc/local-servers.txt
 
 # Install crontab for the game server user
 RUN crontab -u alink /home/alink/etc/crontab2.lst
 
-RUN mkdir /home/alink/public_html
+WORKDIR /home/alink
+
+# Ports > 21157 since we're not root.
+EXPOSE 21157/udp
+EXPOSE 8080/tcp
+
+HEALTHCHECK --interval=1m --start-period=30s --start-interval=5s --timeout=2s \
+    CMD ps auxww | grep 'alink.*anet3'
 
 # Entrypoint
 COPY docker/entrypoint.sh /opt/local/bin/entrypoint.sh
